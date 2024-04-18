@@ -17,8 +17,7 @@ jobs:
           go-version: '1.16.10'
 
       - name: Setup Dependencies
-        run: sudo apt install git make cmake gcc automake libtool autoconf -y
-
+        run: sudo apt install git make cmake gcc automake libtool autoconf libhwloc-dev -y
       - name: build starting
         run: |
           mkdir -p build
