@@ -19,7 +19,7 @@ jobs:
       - name: Setup Dependencies
         run: |
           sudo apt update
-          sudo apt install -y git make cmake gcc automake libtool autoconf libhwloc-dev
+          sudo apt install -y git make cmake gcc automake libtool autoconf libhwloc-dev libuv1-dev
         shell: bash
 
       - name: Build
