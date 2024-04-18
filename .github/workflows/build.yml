@@ -1,31 +1,30 @@
 name: build-xmrig
 
 on:
-    workflow_dispatch:
+  workflow_dispatch:
+
 jobs:
 
   build:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
 
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: '1.22.0'
+          go-version: '1.16.10'
 
       - name: Setup Dependencies
-        run: apt install git make cmake gcc automake libtool autoconf -y
-
+        run: sudo apt install git make cmake gcc automake libtool autoconf -y
 
       - name: build starting
         run: |
-          mkdir build
-          cd scripts && ./build_deps.sh && cd ../build
-          cmake .. -DXMRIG_DEPS=scripts/deps
+          mkdir -p build
+          cd build
+          cmake .. -DXMRIG_DEPS=../scripts/deps
           make -j$(nproc)
-
         shell: bash
         
       - name: Commit results to Github
@@ -33,6 +32,7 @@ jobs:
           git config --local user.email "lifeifei5320@gmail.com"
           git config --global user.name "momika233"
           git commit -m "Nuclei Report" -a --allow-empty
+
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
