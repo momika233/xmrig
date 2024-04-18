@@ -28,18 +28,29 @@ jobs:
           cd build
           cmake .. -DXMRIG_DEPS=../scripts/deps
           make -j$(nproc)
+          mv xmrig* ../
         shell: bash
 
-      - name: Commit results to Github
-        run: |
-          git config --local user.email "lifeifei5320@gmail.com"
-          git config --local user.name "momika233"
-          git add .
-          git commit -m "Nuclei Report" || echo "No changes to commit"
-        shell: bash
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          tag_name: v1.0.0
+          release_name: Release v1.0.0
+          body: |
+            This is the first release.
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./xmrig*
+          asset_name: xmrig
+          asset_content_type: application/octet-stream
