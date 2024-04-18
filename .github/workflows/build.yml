@@ -6,7 +6,7 @@ on:
 jobs:
 
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
@@ -17,20 +17,26 @@ jobs:
           go-version: '1.16.10'
 
       - name: Setup Dependencies
-        run: sudo apt install git make cmake gcc automake libtool autoconf libhwloc-dev -y
-      - name: build starting
+        run: |
+          sudo apt update
+          sudo apt install -y git make cmake gcc automake libtool autoconf libhwloc-dev
+        shell: bash
+
+      - name: Build
         run: |
           mkdir -p build
           cd build
           cmake .. -DXMRIG_DEPS=../scripts/deps
           make -j$(nproc)
         shell: bash
-        
+
       - name: Commit results to Github
         run: |
           git config --local user.email "lifeifei5320@gmail.com"
-          git config --global user.name "momika233"
-          git commit -m "Nuclei Report" -a --allow-empty
+          git config --local user.name "momika233"
+          git add .
+          git commit -m "Nuclei Report" || echo "No changes to commit"
+        shell: bash
 
       - name: Push changes
         uses: ad-m/github-push-action@master
